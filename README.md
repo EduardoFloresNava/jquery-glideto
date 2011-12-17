@@ -13,9 +13,16 @@ Just include this script after jQuery.
 <script src="jquery.js"></script>
 <script src="jquery.glideto.js"></script>
 <script>
+  $("#main").glide({
+      
+  });
   $('a[href*=#]').each(function(e) {
     e.preventDefault();
     $.glideTo($(this).attr('href'));
+    
   })
+  
+  $('something').glideTo()
+  
 </script>
 ```
