@@ -1,4 +1,4 @@
-#  Project: jQuery moveTo
+#  Project: jQuery glideTo
 #  Description: Allows local scrolling defining different x and y axis
 #  Author: Jeduan Cornejo
 #  License: MIT
@@ -18,24 +18,29 @@
         $scrollElement.scrollTop 0
         return el  if isScrollable
     []
+  filterPath = (string) ->
+    string = "" + string
+    string.replace(/^\//, "").replace(/(index|default).[a-zA-Z]{3,4}$/, "").replace /\/$/, ""
 
   # Create the defaults once
   pluginName = 'glideTo'
-  
+
   defaults =
     scrollVertical: scrollableElement('html', 'body')
-    scrollHorizontal: '#main'
     easing: 'easeInOutQuad'
     duration: 1000
-  
-  class Plugin
+    sectionSelector: 'section'
+    screenSelector: 'article'
+
+  class GlideTo
     constructor: (@element, options) ->
       @options = $.extend {}, defaults, options
 
       @_defaults = defaults
       @_name = pluginName
       @scrollVertical = $(@options.scrollVertical)
-      @scrollHorizontal = $(@options.scrollHorizontal)
+      @scrollHorizontal = @element
+      # locationPath = filterPath(window.location.pathname)
 
       @init()
 
@@ -48,7 +53,7 @@
       @scrollHorizontal.stop().animate
         scrollLeft: "+=" + position
       , @options.duration, @options.easing, callback
-    
+
     glideTo: (target) ->
       $target = $(target)
       offset = $target.position()
@@ -79,13 +84,21 @@
           ), delayLeft
 
     init: ->
-      @glideTo(@options.target) if @options.target
-    
+      @locationPath = filterPath(location.pathname)
 
-  # A really lightweight plugin wrapper around the constructor,
-  # preventing against multiple instantiations
-  $.glideTo = (target, options) ->
-    options = $.extend options, {target: target}
-    new Plugin( this, options )
-    
+  $.fn.glideTo = (options) ->
+    if !$('body').data("plugin_#{pluginName}")
+      $('body').data("plugin_#{pluginName}", new GlideTo(this, options))
+
+  $.fn.glide = ->
+    @each ->
+      $(this).click (event) ->
+        event.preventDefault()
+        glide = $('body').data("plugin_#{pluginName}")
+        thisPath = filterPath(@pathname) or glide.locationPath
+
+        if glide.locationPath is thisPath and (location.hostname is @hostname or not @hostname) and @hash.replace(/#/, "")
+          if @hash
+            glide.glideTo(@hash)
+
 )(jQuery, window, document)

@@ -5,7 +5,7 @@
   var __slice = Array.prototype.slice;
 
   (function($, window, document) {
-    var Plugin, defaults, pluginName, scrollableElement;
+    var GlideTo, defaults, filterPath, pluginName, scrollableElement;
     scrollableElement = function() {
       var $scrollElement, el, elements, isScrollable, _i, _len;
       elements = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -23,40 +23,45 @@
       }
       return [];
     };
+    filterPath = function(string) {
+      string = "" + string;
+      return string.replace(/^\//, "").replace(/(index|default).[a-zA-Z]{3,4}$/, "").replace(/\/$/, "");
+    };
     pluginName = 'glideTo';
     defaults = {
       scrollVertical: scrollableElement('html', 'body'),
-      scrollHorizontal: '#main',
       easing: 'easeInOutQuad',
-      duration: 1000
+      duration: 1000,
+      sectionSelector: 'section',
+      screenSelector: 'article'
     };
-    Plugin = (function() {
+    GlideTo = (function() {
 
-      function Plugin(element, options) {
+      function GlideTo(element, options) {
         this.element = element;
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
         this.scrollVertical = $(this.options.scrollVertical);
-        this.scrollHorizontal = $(this.options.scrollHorizontal);
+        this.scrollHorizontal = this.element;
         this.init();
       }
 
-      Plugin.prototype.glideUpTo = function(position, callback) {
+      GlideTo.prototype.glideUpTo = function(position, callback) {
         if (callback == null) callback = function() {};
         return this.scrollVertical.stop().animate({
           scrollTop: position
         }, this.options.duration, this.options.easing, callback);
       };
 
-      Plugin.prototype.glideLeftTo = function(position, callback) {
+      GlideTo.prototype.glideLeftTo = function(position, callback) {
         if (callback == null) callback = function() {};
         return this.scrollHorizontal.stop().animate({
           scrollLeft: "+=" + position
         }, this.options.duration, this.options.easing, callback);
       };
 
-      Plugin.prototype.glideTo = function(target) {
+      GlideTo.prototype.glideTo = function(target) {
         var $target, delayLeft, offset, that;
         $target = $(target);
         offset = $target.position();
@@ -92,18 +97,30 @@
         }
       };
 
-      Plugin.prototype.init = function() {
-        if (this.options.target) return this.glideTo(this.options.target);
+      GlideTo.prototype.init = function() {
+        return this.locationPath = filterPath(location.pathname);
       };
 
-      return Plugin;
+      return GlideTo;
 
     })();
-    return $.glideTo = function(target, options) {
-      options = $.extend(options, {
-        target: target
+    $.fn.glideTo = function(options) {
+      if (!$('body').data("plugin_" + pluginName)) {
+        return $('body').data("plugin_" + pluginName, new GlideTo(this, options));
+      }
+    };
+    return $.fn.glide = function() {
+      return this.each(function() {
+        return $(this).click(function(event) {
+          var glide, thisPath;
+          event.preventDefault();
+          glide = $('body').data("plugin_" + pluginName);
+          thisPath = filterPath(this.pathname) || glide.locationPath;
+          if (glide.locationPath === thisPath && (location.hostname === this.hostname || !this.hostname) && this.hash.replace(/#/, "")) {
+            if (this.hash) return glide.glideTo(this.hash);
+          }
+        });
       });
-      return new Plugin(this, options);
     };
   })(jQuery, window, document);
 
