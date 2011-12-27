@@ -30,6 +30,7 @@
     pluginName = 'glideTo';
     defaults = {
       scrollVertical: scrollableElement('html', 'body'),
+      scrollHorizontal: '#main',
       easing: 'easeInOutQuad',
       duration: 1000,
       sectionSelector: 'section',
@@ -37,13 +38,12 @@
     };
     GlideTo = (function() {
 
-      function GlideTo(element, options) {
-        this.element = element;
+      function GlideTo(options) {
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
         this.scrollVertical = $(this.options.scrollVertical);
-        this.scrollHorizontal = this.element;
+        this.scrollHorizontal = $(this.options.scrollHorizontal);
         this.init();
       }
 
@@ -104,9 +104,9 @@
       return GlideTo;
 
     })();
-    $.fn.glideTo = function(options) {
+    $.glideTo = function(options) {
       if (!$('body').data("plugin_" + pluginName)) {
-        return $('body').data("plugin_" + pluginName, new GlideTo(this, options));
+        return $('body').data("plugin_" + pluginName, new GlideTo(options));
       }
     };
     return $.fn.glide = function() {

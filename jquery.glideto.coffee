@@ -27,19 +27,20 @@
 
   defaults =
     scrollVertical: scrollableElement('html', 'body')
+    scrollHorizontal: '#main'
     easing: 'easeInOutQuad'
     duration: 1000
     sectionSelector: 'section'
     screenSelector: 'article'
 
   class GlideTo
-    constructor: (@element, options) ->
+    constructor: (options) ->
       @options = $.extend {}, defaults, options
 
       @_defaults = defaults
       @_name = pluginName
       @scrollVertical = $(@options.scrollVertical)
-      @scrollHorizontal = @element
+      @scrollHorizontal = $(@options.scrollHorizontal)
       # locationPath = filterPath(window.location.pathname)
 
       @init()
@@ -86,9 +87,9 @@
     init: ->
       @locationPath = filterPath(location.pathname)
 
-  $.fn.glideTo = (options) ->
+  $.glideTo = (options) ->
     if !$('body').data("plugin_#{pluginName}")
-      $('body').data("plugin_#{pluginName}", new GlideTo(this, options))
+      $('body').data("plugin_#{pluginName}", new GlideTo(options))
 
   $.fn.glide = ->
     @each ->
