@@ -4,6 +4,15 @@
 jQuery glideTo is a plugin that will can help easily create scrolling navigation
 websites.
 
+How is this different from jQuery.localScroll ?
+---
+
+When I was researching I was worried that `jQuery.scrollTo` / `jQuery.localScroll` last update was back in 2009. Also they assumed that the content would scroll on a single container div.
+
+glideTo lets you scroll on a different element both horizontally and vertically. This lets you just restrict the panels horizontally while the normal browser window scrolling is used vertically.
+
+Also, it is written on CoffeeScript and it's just 2.2k when minimized.
+
 Usage
 -----
 
