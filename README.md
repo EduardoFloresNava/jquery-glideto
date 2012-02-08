@@ -55,7 +55,11 @@ easing: 'easeInOutQuad'
 
 Demo
 ---
-You can see visit the plugin's [demo page to see it in action][demo] 
+You can see visit the plugin's [demo page to see it in action][demo].
+
+Where is it being used?
+---
+The plugin was developed for [Philadelphia Cheese Mexico][philly]'s website.
 
 License
 ---
@@ -72,3 +76,4 @@ THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
   [jquery-easing]: http://gsgd.co.uk/sandbox/jquery/easing/
   [demo]: http://jeduan.github.com/jquery-glideto
+  [philly]: http://www.philadelphia.com.mx
